@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connect.php';
+include __DIR__ . '/../components/connect.php';
 
 // clear session data
 $_SESSION = [];
@@ -9,6 +9,6 @@ $_SESSION = [];
 session_destroy();
 
 // redirect
-header('Location:../admin/login.php');
+header('Location:../admin/home.php');
 exit;
 ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . '/../connect.php';
+include 'connect.php';
 
 $warning_msg = [];
 $success_msg = [];
@@ -22,10 +22,10 @@ if(isset($_POST['register'])){
     }
 
     // check email exists
-    $select_seller = $conn->prepare("SELECT * FROM seller WHERE email = ?");
-    $select_seller->execute([$email]);
+    $select_users = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $select_users->execute([$email]);
 
-    if($select_seller->rowCount() > 0){
+    if($select_users->rowCount() > 0){
         $warning_msg[] = 'Email already exists!';
     }
 
@@ -59,11 +59,11 @@ if(isset($_POST['register'])){
 
     // insert user
     if(empty($warning_msg)){
-        $insert_seller = $conn->prepare(
-            "INSERT INTO seller (id, name, email, password, image) 
+        $insert_users = $conn->prepare(
+            "INSERT INTO users (id, name, email, password, image) 
              VALUES (?, ?, ?, ?, ?)"
         );
-        $insert_seller->execute([$id, $name, $email, $pass, $rename]);
+        $insert_users->execute([$id, $name, $email, $pass, $rename]);
 
         $success_msg[] = 'New user registered! Please login now.';
     }
@@ -91,7 +91,7 @@ if(isset($_POST['register'])){
 <body>
 
 
-
+<?php include 'user_header.php'; ?>
 
 <div class="form-container form" style="margin: 20px 300px;">
     <form action="" method="post" enctype="multipart/form-data" class="register">
@@ -130,7 +130,7 @@ if(isset($_POST['register'])){
     </form>
 </div>
 
-
+<?php include 'user_footer.php'; ?>
 
 <script>
 <?php if(!empty($warning_msg)): ?>
@@ -141,8 +141,6 @@ if(isset($_POST['register'])){
     });
 <?php endif; ?>
 </script>
-
-<script src="../js/admin_script.js"></script>
-<?php include __DIR__ . '/../alert.php'; ?>
+<script src="../js/user_script.js"></script>
 </body>
 </html>

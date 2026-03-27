@@ -10,19 +10,17 @@ $success_msg = [];
 
 $user_id = $_SESSION['user_id'] ?? '';
 
-$seller_id = $_SESSION['seller_id'] ?? '';
-if($seller_id == ''){
-   header('location:login.php');
-   exit;
+if($user_id == ''){
+    header('location:login.php');
+    exit;
 }
 
-$select_product = $conn->prepare("SELECT * FROM products WHERE seller_id = ?");
-$select_product->execute([$seller_id]);
-$total_product = $select_product->rowCount();
-
-$select_order = $conn->prepare("SELECT * FROM order WHERE seller_id = ?");
-$select_order->execute([$seller_id]);
+$select_order = $conn->prepare("SELECT * FROM orders WHERE user_id = ?");
+$select_order->execute([$user_id]);
 $total_order = $select_order->rowCount();
+
+$select_message = $conn->prepare("SELECT * FRPM message WHERE user_id = ?");
+
 ?>
 
 <!DOCTYPE html>
@@ -38,34 +36,33 @@ $total_order = $select_order->rowCount();
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 
 <!-- Custom CSS -->
-<link rel="stylesheet" href="../css/admin_style.css?v=<?= time(); ?>">
+<link rel="stylesheet" href="../css/user_style.css?v=<?= time(); ?>">
 
 <title>Cosmika A Cosmetic Website Template</title>
 </head>
 <body>
 
-<?php include __DIR__ . '/../components/admin_header.php'; ?>
+<?php include 'user_header.php'; ?>
 
 <div class="banner">
     <div class="detail">
-      <h1>my profile</h1>
+      <h1>profile</h1>
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium <br>
         modi neque aut, voluptatem saepe non nemo sequi quas, animi reiciendis <br>
         vitae doloremque sed facilis est illo quisquam fugit obcaecati omnis.</p>
-         <span><a href="dashboard.php">home</a><i class="bx bx-right-arrow-alt"></i>my profile</span>
+         <span><a href="home.php">home</a><i class="bx bx-right-arrow-alt"></i>profile</span>
     </div>
 </div>
 
-<div class="profile">
+<div class="profile user-form">
     <div class="heading">
-        <h1>seller profile</h1>
-        <img src="../images/separator.png" alt="">
+        <h1>profile details</h1>
     </div>
-    <div class="details">
+     <div class="details">
         <div class="user">
             <img src="../uploaded_files/<?= $fetch_profile['image'] ?>">
             <h3><?= $fetch_profile['name'] ?>"</h3>
-            <p>seller</p>
+            <p>user</p>
             <a href="update.php" class="btn">update profile</a>
         </div>
         <div class="box-container">
@@ -79,19 +76,17 @@ $total_order = $select_order->rowCount();
             <div class="box">
                 <div class="flex">
                     <i class="bx bxs-chat"></i>
-                    <h3><?= $total_products; ?></h3>
+                    <h3><?= $total_message; ?></h3>
                 </div>
-                <a href="contact.php" class="btn">stotal products</a>
+                <a href="contact.php" class="btn">send message</a>
             </div>
         </div>
-    </div>
+     </div>
 </div>
 
 
 
-
-
-<?php include __DIR__ . '/../components/admin_footer.php'; ?>
+<?php include 'user_footer.php'; ?>
 
 <!-- SweetAlert -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
@@ -113,7 +108,6 @@ $total_order = $select_order->rowCount();
 <?php endif; ?>
 </script>
 
-<script src="../js/admin_script.js"></script>
-<?php include __DIR__ . '/../components/alert.php'; ?>
+<script src="../js/user_script.js"></script>
 </body>
 </html>

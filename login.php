@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . '/../connect.php';
+include 'connect.php';
 
 $warning_msg = [];
 
@@ -15,29 +15,29 @@ if (isset($_POST['login'])) {
 
         $stmt = $conn->prepare(
             "SELECT id, name, password 
-             FROM seller 
+             FROM users 
              WHERE email = :email 
              LIMIT 1"
         );
         $stmt->execute(['email' => $email]);
-        $sellerr = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($seller) {
+        if ($user) {
 
-            if (password_verify($password, $seller['password'])) {
+            if (password_verify($password, $user['password'])) {
 
                 session_regenerate_id(true);
 
-                $_SESSION['seller_id'] = $user['id'];
+                $_SESSION['user_id'] = $user['id'];
 
                 setcookie(
-                    'seller_id',
-                    $seller['id'],
+                    'user_id',
+                    $user['id'],
                     time() + (60 * 60 * 24 * 30),
                     "/"
                 );
 
-                header("Location: dashboard.php");
+                header("Location: home.php");
                 exit;
 
             } else {
@@ -70,7 +70,7 @@ if (isset($_POST['login'])) {
 </head>
 <body>
 
-
+<?php include 'user_header.php'; ?>
 
 <div class="banner">
     <div class="detail">
@@ -83,7 +83,7 @@ if (isset($_POST['login'])) {
     </div>
 </div>
 
-<div class="form-container form" style="margin-left:300px; margin-top:20px; margin-bottom:20px;">
+<div class="form-container" style="margin-left:300px; margin-top:20px; margin-bottom:20px;">
     <form action="" method="post" class="login">
         <h3>Login</h3>
 
@@ -102,7 +102,7 @@ if (isset($_POST['login'])) {
     </form>
 </div>
 
-
+<?php include 'user_footer.php'; ?>
 
 <!-- SweetAlert -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
@@ -118,8 +118,7 @@ if (isset($_POST['login'])) {
 <?php endif; ?>
 </script>
 
-<script src="../js/admin_script.js"></script>
-<?php include __DIR__ . '/../alert.php'; ?>
+<script src="../js/user_script.js"></script>
 
 </body>
 </html>
